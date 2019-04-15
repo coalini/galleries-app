@@ -1,9 +1,36 @@
 <template>
-  <div>AppLogin</div>
+  <form class="mt-5" @submit.prevent="login">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        placeholder="Enter email"
+        required
+      >
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        name="password"
+        placeholder="Enter Password"
+        required
+      >
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Login</button>
+  </form>
 </template>
 
 <script>
 export default {
-  name: "AppLogin"
+  name: "AppLogin",
+  methods: {
+    login() {}
+  }
 };
 </script>
