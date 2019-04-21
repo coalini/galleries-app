@@ -1,54 +1,92 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import AppAllGalleries from "@/components/AppAllGalleries.vue";
-import AppLogin from "@/components/AppLogin.vue";
-import AppRegister from "@/components/AppRegister.vue";
-import AppMyGalleries from "@/components/AppMyGalleries.vue";
-import AppCreateGallery from "@/components/AppCreateGallery.vue";
+
+import AppLogin from "@/components/AppLogin";
+import AppRegister from "@/components/AppRegister";
+
+import AllGalleries from "@/components/AllGalleries";
+import CreateGallery from "@/components/CreateGallery";
+import MyGalleries from "@/components/MyGalleries";
+import AuthorGalleries from "@/components/AuthorGalleries";
+import ViewGallery from "@/components/ViewGallery";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    component: AppAllGalleries,
-    name: "AppAllGalleries"
+    name: "home",
+    component: AllGalleries
+  },
+  {
+    path: "/my-galleries",
+    name: "my-galleries",
+    component: MyGalleries,
+    meta: {
+      auth: true
+    }
+  },
+  {
+    path: "/authors/:id",
+    name: "author",
+    component: AuthorGalleries
+  },
+  {
+    path: "/galleries/:id",
+    name: "gallery",
+    component: ViewGallery
+  },
+  {
+    path: "/create",
+    name: "create-gallery",
+    component: CreateGallery,
+    meta: {
+      auth: true
+    }
+  },
+  {
+    path: "/edit-gallery/:id",
+    name: "edit",
+    component: CreateGallery,
+    meta: {
+      auth: true
+    }
   },
   {
     path: "/login",
     component: AppLogin,
-    name: "AppLogin",
+    name: "login",
     meta: {
-      requiresAuth: false
+      guest: true
     }
   },
   {
     path: "/register",
     component: AppRegister,
-    name: "AppRegister",
+    name: "register",
     meta: {
-      requiresAuth: false
-    }
-  },
-  {
-    path: "/my-galleries",
-    component: AppMyGalleries,
-    name: "AppMyGalleries",
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: "/create",
-    component: AppCreateGallery,
-    name: "AppCreateGallery",
-    meta: {
-      requiresAuth: true
+      guest: true
     }
   }
 ];
 
-export const router = new VueRouter({
-  mode: "history",
-  routes
+const router = new VueRouter({
+  routes,
+  mode: "history"
 });
+
+router.beforeEach((to, from, next) => {
+  const isAuth = !!localStorage.getItem("user");
+
+  if (isAuth && to.meta.guest) {
+    return next({ name: "home" });
+  }
+
+  if (!isAuth && to.meta.auth) {
+    return next({ name: "login" });
+  }
+
+  return next();
+});
+
+export default router;

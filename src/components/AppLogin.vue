@@ -1,36 +1,56 @@
 <template>
-  <form class="mt-5" @submit.prevent="login">
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input
-        type="email"
-        class="form-control"
-        id="email"
-        name="email"
-        placeholder="Enter email"
-        required
-      >
-    </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        class="form-control"
-        id="password"
-        name="password"
-        placeholder="Enter Password"
-        required
-      >
-    </div>
-    <button type="submit" class="btn btn-primary mt-3">Login</button>
-  </form>
+  <div class="form">
+    <h1>Login</h1>
+    <form @submit.prevent="onSubmit">
+      <div class="form-group">
+        <input type="email" class="form-control" placeholder="Email" v-model="user.email" required>
+      </div>
+
+      <div class="form-group">
+        <input
+          type="password"
+          class="form-control"
+          placeholder="Password"
+          v-model="user.password"
+          required
+        >
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+
+    <form-error v-if="errors">{{ errors }}</form-error>
+  </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
+import FormError from "@/components/partials/FormError";
+
 export default {
-  name: "AppLogin",
+  components: {
+    FormError
+  },
+  data() {
+    return {
+      user: {}
+    };
+  },
   methods: {
-    login() {}
+    ...mapActions(["login"]),
+    onSubmit() {
+      this.login(this.user);
+    }
+  },
+  computed: {
+    ...mapGetters({
+      errors: "getErrors"
+    })
   }
 };
 </script>
+
+<style scoped>
+.form {
+  max-width: 600px;
+}
+</style>
